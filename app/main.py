@@ -8,6 +8,7 @@ SNAKE = 10
 WALL = 10
 FOOD = -10
 ME = 1
+directions = ['up', 'left', 'down', 'right']
 
 @bottle.route('/')
 def index():
@@ -78,7 +79,7 @@ def move():
 
     print(json.dumps(data))
 
-    direction = 'left'
+    direction = directions[2]
 
     return move_response(direction)
 
