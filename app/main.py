@@ -2,7 +2,6 @@ import json
 import os
 import random
 import bottle
-from AStar import *
 
 from api import ping_response, start_response, move_response, end_response
 SNAKE = 10
@@ -62,30 +61,24 @@ def move():
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    height = data[board]['height']
-    width = data[board]['width']
+    height = data['board']['height']
+    width = data['board']['width']
     grid = [[0 for col in xrange(height)] for row in xrange(width)]
     id = data['you']['id']
     health = data['you']['health']
-    body = [[],[]]
-
-    for space in data['you']['body']:
-        body.append([space['x'],space['y']])
-    snake_length = len(body)
 
     for snake in data['snakes']:
-        if snake['id'] = id:
-            grid[coord[0]][coord[1]] = M
-        for body in snake['body']
+        if snake['id'] == id:
+            grid[coord[0]][coord[1]] = ME
+        for body in snake['body']:
             grid[coord[0]][coord[1]] = SNAKE
 
     for food in data['board']['food']:
         grid[food[0]][food[1]] = FOOD
-        
+
     print(json.dumps(data))
 
-    directions = ['up', 'down', 'left', 'right']
-    direction = random.choice(directions)
+    direction = 'left'
 
     return move_response(direction)
 
