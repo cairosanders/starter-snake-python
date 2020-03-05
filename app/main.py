@@ -10,6 +10,19 @@ FOOD = -10
 ME = 1
 directions = ['up', 'left', 'down', 'right']
 
+def direction(from_cell, to_cell):
+    dx = to_cell[0] - from_cell[0]
+    dy = to_cell[1] - from_cell[1]
+
+    if dx == 1:
+        return 'east'
+    elif dx == -1:
+        return 'west'
+    elif dy == -1:
+        return 'north'
+    elif dy == 1:
+        return 'south'
+
 @bottle.route('/')
 def index():
     return '''
@@ -68,8 +81,30 @@ def move():
     grid = [[0 for col in xrange(height)] for row in xrange(width)]
     id = data['you']['id']
     health = data['you']['health']
+    head = data['you']['body'][0][0]
+    for snake in data['board']['snakes']:
+        for coord in snek['body']:
+            grid[coord[0]][coord[1]] = SNAKE
 
-    direction = directions[3]
+    for coord in data['you']['body']:
+            grid[coord[0]][coord[1]] = ME
+
+    for food in data['board']['food']:
+        grid[food[0]][food[1]] = FOOD
+
+    for space in range(width):
+        grid[0][space] = WALL
+        grid[height][space] = WALL
+
+    for space in range(height):
+        grid[space][0] = WALL
+        grid[width][space] = WALL
+
+
+    if head < FOOD[0][0]:
+        direction = directions[3]
+    else:
+        direction = directions[1]
 
     return move_response(direction)
 
