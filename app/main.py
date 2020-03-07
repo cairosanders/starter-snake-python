@@ -4,30 +4,8 @@ import random
 import bottle
 
 from api import ping_response, start_response, move_response, end_response
-SNAKE = 8
-WALL = 9
-FOOD = -1
-ME = 1
 
 directions = ['up', 'left', 'down', 'right']
-
-def min_direction(grid,x,y):
-    #up
-    down = grid[x+1][y]
-    up = grid[x-1][y]
-    left = grid[x][y-1]
-    right = grid[x][y+1]
-    direct = [up,down,left,right]
-    mindirect = min(direct)
-    print(direct)
-    if mindirect == up:
-      return directions[0]
-    elif mindirect == left:
-      return directions[1]
-    elif mindirect == down:
-      return directions[2]
-    else:
-      return directions[3]
 
 @bottle.route('/')
 def index():
@@ -77,33 +55,47 @@ def start():
 def move():
     data = bottle.request.json
 
-    height = data['board']['height']-1
-    width = data['board']['width']-1
-    grid = [[0 for col in range(height)] for row in range(width)]
+    height = data['board']['height']
+    width = data['board']['width']
     id = data['you']['id']
     health = data['you']['health']
     head = data['you']['body'][0]
 
+    snakes = []
     for snake in data['board']['snakes']:
-        for coord in snake['body']:
-            grid[coord['x']][coord['y']] = SNAKE
+      for body in snake['body']:
+        snakes.append(body)
 
-    for coord in data['you']['body']:
-        grid[coord['x']][coord['y']] = ME
+    me = []
+    for bod in data['you']['body']:
+      me.append(bod)
 
-    for food in data['board']['food']:
-        grid[food['x']][food['y']] = FOOD
+    food = []
+    for fo in data['board']['food']:
+       food.append(fo)
 
-    for space in range(width):
-        grid[0][space] = WALL
-        grid[height-1][space] = WALL
+    path = {'x':0, 'y':0}
+    #right
+    path['x'] = head['x']+1
+    path['y'] = head['y']
+    if (path in snakes or path['x'] > width-1 or path['x'] <0 or path['y']>height-1 or path['y'] <0) == False:
+      direction = directions[3]
+    #left
+    path['x'] = head['x']-1
+    path['y'] = head['y']
+    if (path in snakes or path['x']>width-1 or path['x'] <0 or path['y']>height-1 or path['y'] <0) == False:
+      direction = directions[1]
+    #down
+    path['x'] = head['x']
+    path['y'] = head['y']+1
+    if (path in snakes or path['x']>width-1 or path['x'] <0 or path['y']>height-1 or path['y'] <0) == False:
+      direction = directions[2]
+    #up
+    path['x'] = head['x']
+    path['y'] = head['y']-1
+    if (path in snakes or path['x']>width-1 or path['x'] <0 or path['y']>height-1 or path['y'] <0) == False:
+      direction = directions[0]
 
-    for space in range(height):
-        grid[space][0] = WALL
-        grid[space][width-1] = WALL
-
-
-    direction = min_direction( grid, head['x'] ,head['y'])
     return move_response(direction)
 
 
