@@ -23,6 +23,25 @@ def direction(from_cell, to_cell):
     elif dy == 1:
         return 'south'
 
+def one_move(square, direction):
+    '''
+    takes in a square and a direction and returns the square one step in that direction
+    '''
+    newSquare = {"x": 0, "y":0}
+    if direction == "up":
+        newSquare["x"] = square["x"]
+        newSquare["y"] = square["y"] - 1
+    elif direction == "down":
+        newSquare["x"] = square["x"]
+        newSquare["y"] = square["y"] + 1
+    elif direction == "left":
+        newSquare["x"] = square["x"] - 1
+        newSquare["y"] = square["y"]
+    elif direction == "right":
+        newSquare["x"] = square["x"] + 1
+        newSquare["y"] = square["y"]
+    return newSquare
+
 @bottle.route('/')
 def index():
     return '''
@@ -81,7 +100,7 @@ def move():
     grid = [[0 for col in xrange(height)] for row in xrange(width)]
     id = data['you']['id']
     health = data['you']['health']
-    head = data['you']['body'][0][0]
+    head = data['you']['body'][0]
     for snake in data['board']['snakes']:
         for coord in snek['body']:
             grid[coord[0]][coord[1]] = SNAKE
@@ -101,10 +120,13 @@ def move():
         grid[width][space] = WALL
 
 
-    if head < FOOD[0][0]:
-        direction = directions[3]
-    else:
-        direction = directions[1]
+    for direct in (directions):
+        if one_move(head, direct) == FOOD:
+            direction = directions[direct]
+        elif one_move(head, direct) != SNAKE:
+            direction = directions[direct]
+        else:
+            continue
 
     return move_response(direction)
 
