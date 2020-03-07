@@ -4,10 +4,11 @@ import random
 import bottle
 
 from api import ping_response, start_response, move_response, end_response
-SNAKE = 10
-WALL = 10
-FOOD = -10
+SNAKE = 8
+WALL = 9
+FOOD = -1
 ME = 1
+
 directions = ['up', 'left', 'down', 'right']
 
 def min_direction(grid,x,y):
@@ -105,8 +106,8 @@ def move():
         grid[space][0] = WALL
         grid[space][width-1] = WALL
 
-    direction = min_direction(grid, head['x'], head['y'])
-
+    #direction = min_direction(grid, head['x'], head['y'])
+    direction = directions[3]
     return move_response(direction)
 
 
