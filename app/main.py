@@ -76,13 +76,8 @@ def start():
 def move():
     data = bottle.request.json
 
-    """
-    TODO: Using the data from the endpoint request object, your
-            snake AI must choose a direction to move in.
-    """
-
-    height = data['board']['height'] +1
-    width = data['board']['width'] +1
+    height = data['board']['height']
+    width = data['board']['width']
     grid = [[0 for col in range(height)] for row in range(width)]
     id = data['you']['id']
     health = data['you']['health']
@@ -90,13 +85,13 @@ def move():
 
     for snake in data['board']['snakes']:
         for coord in snake['body']:
-            grid[coord['x']+1][coord['y']+1] = SNAKE
+            grid[coord['x']][coord['y']] = SNAKE
 
     for coord in data['you']['body']:
-        grid[coord['x']+1][coord['y']+1] = ME
+        grid[coord['x']][coord['y']] = ME
 
     for food in data['board']['food']:
-        grid[food['x']+1][food['y']+1] = FOOD
+        grid[food['x']][food['y']] = FOOD
 
     for space in range(width):
         grid[0][space] = WALL
@@ -106,8 +101,7 @@ def move():
         grid[space][0] = WALL
         grid[space][width-1] = WALL
 
-    #direction = min_direction(grid, head['x'], head['y'])
-    direction = directions[3]
+    direction = min_direction(grid, head['x'], head['y'])
     return move_response(direction)
 
 
