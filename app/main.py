@@ -13,12 +13,13 @@ directions = ['up', 'left', 'down', 'right']
 
 def min_direction(grid,x,y):
     #up
-    up = grid[x][y+1]
-    down = grid[x-1][y-1]
-    left = grid[x-1][y]
-    right = grid[x+1][y]
+    right = grid[x][y+1]
+    left = grid[x-1][y-1]
+    up = grid[x-1][y]
+    down = grid[x+1][y]
     direct = [up,down,left,right]
     mindirect = min(direct)
+    print(direct)
     if mindirect == up:
       return directions[0]
     elif mindirect == left:
@@ -101,7 +102,7 @@ def move():
         grid[space][0] = WALL
         grid[space][width-1] = WALL
 
-    direction = min_direction(grid, head['x'], head['y'])
+    direction = min_direction(grid, head['x'], head['y']) 
     return move_response(direction)
 
 
