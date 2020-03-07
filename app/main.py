@@ -102,7 +102,7 @@ def move():
         grid[space][0] = WALL
         grid[space][width-1] = WALL
 
-    direction = min_direction(grid, head['x'], head['y']) 
+    direction = random.choice(directions)
     return move_response(direction)
 
 
