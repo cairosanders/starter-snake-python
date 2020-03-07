@@ -10,37 +10,22 @@ FOOD = -10
 ME = 1
 directions = ['up', 'left', 'down', 'right']
 
-def direction(from_cell, to_cell):
-    dx = to_cell[0] - from_cell[0]
-    dy = to_cell[1] - from_cell[1]
-
-    if dx == 1:
-        return 'east'
-    elif dx == -1:
-        return 'west'
-    elif dy == -1:
-        return 'north'
-    elif dy == 1:
-        return 'south'
-
-def one_move(square, direction):
-    '''
-    takes in a square and a direction and returns the square one step in that direction
-    '''
-    newSquare = {"x": 0, "y":0}
-    if direction == "up":
-        newSquare["x"] = square["x"]
-        newSquare["y"] = square["y"] - 1
-    elif direction == "down":
-        newSquare["x"] = square["x"]
-        newSquare["y"] = square["y"] + 1
-    elif direction == "left":
-        newSquare["x"] = square["x"] - 1
-        newSquare["y"] = square["y"]
-    elif direction == "right":
-        newSquare["x"] = square["x"] + 1
-        newSquare["y"] = square["y"]
-    return newSquare
+def min_direction(grid,x,y):
+    #up
+    up = grid[x][y+1]
+    down = grid[x-1][y-1]
+    left = grid[x-1][y]
+    right = grid[x+1][y]
+    direct = [up,down,left,right]
+    mindirect = min(direct)
+    if mindirect == up:
+      return directions[0]
+    elif mindirect == left:
+      return directions[1]
+    elif mindirect == down:
+      return directions[2]
+    else:
+      return directions[3]
 
 @bottle.route('/')
 def index():
@@ -95,38 +80,32 @@ def move():
             snake AI must choose a direction to move in.
     """
 
-    height = data['board']['height']
-    width = data['board']['width']
-    grid = [[0 for col in xrange(height)] for row in xrange(width)]
+    height = data['board']['height'] +1
+    width = data['board']['width'] +1
+    grid = [[0 for col in range(height)] for row in range(width)]
     id = data['you']['id']
     health = data['you']['health']
     head = data['you']['body'][0]
+
     for snake in data['board']['snakes']:
-        for coord in snek['body']:
-            grid[coord[0]][coord[1]] = SNAKE
+        for coord in snake['body']:
+            grid[coord['x']+1][coord['y']+1] = SNAKE
 
     for coord in data['you']['body']:
-            grid[coord[0]][coord[1]] = ME
+        grid[coord['x']+1][coord['y']+1] = ME
 
     for food in data['board']['food']:
-        grid[food[0]][food[1]] = FOOD
+        grid[food['x']+1][food['y']+1] = FOOD
 
     for space in range(width):
         grid[0][space] = WALL
-        grid[height][space] = WALL
+        grid[height-1][space] = WALL
 
     for space in range(height):
         grid[space][0] = WALL
-        grid[width][space] = WALL
+        grid[space][width-1] = WALL
 
-
-    for direct in (directions):
-        if one_move(head, direct) == FOOD:
-            direction = directions[direct]
-        elif one_move(head, direct) != SNAKE and one_move(head, direct) != WALL:
-            direction = directions[direct]            
-        else:
-            continue
+    direction = min_direction(grid, head['x'], head['y'])
 
     return move_response(direction)
 
