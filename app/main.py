@@ -13,10 +13,10 @@ directions = ['up', 'left', 'down', 'right']
 
 def min_direction(grid,x,y):
     #up
-    right = grid[x+1][y]
-    left = grid[x-1][y]
-    up = grid[x][y-1]
-    down = grid[x][y+1]
+    down = grid[x+1][y]
+    up = grid[x-1][y]
+    left = grid[x][y-1]
+    right = grid[x][y+1]
     direct = [up,down,left,right]
     mindirect = min(direct)
     print(direct)
