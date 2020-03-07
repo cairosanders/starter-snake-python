@@ -123,8 +123,8 @@ def move():
     for direct in (directions):
         if one_move(head, direct) == FOOD:
             direction = directions[direct]
-        elif one_move(head, direct) != SNAKE:
-            direction = directions[direct]
+        elif one_move(head, direct) != SNAKE and one_move(head, direct) != WALL:
+            direction = directions[direct]            
         else:
             continue
 
