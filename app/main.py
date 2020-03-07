@@ -13,10 +13,10 @@ directions = ['up', 'left', 'down', 'right']
 
 def min_direction(grid,x,y):
     #up
-    right = grid[x][y+1]
-    left = grid[x-1][y-1]
-    up = grid[x-1][y]
-    down = grid[x+1][y]
+    right = grid[x+1][y]
+    left = grid[x-1][y]
+    up = grid[x][y-1]
+    down = grid[x][y+1]
     direct = [up,down,left,right]
     mindirect = min(direct)
     print(direct)
@@ -77,8 +77,8 @@ def start():
 def move():
     data = bottle.request.json
 
-    height = data['board']['height']
-    width = data['board']['width']
+    height = data['board']['height']-1
+    width = data['board']['width']-1
     grid = [[0 for col in range(height)] for row in range(width)]
     id = data['you']['id']
     health = data['you']['health']
@@ -102,7 +102,8 @@ def move():
         grid[space][0] = WALL
         grid[space][width-1] = WALL
 
-    direction = random.choice(directions)
+
+    direction = min_direction( grid, head['x'] ,head['y'])
     return move_response(direction)
 
 
